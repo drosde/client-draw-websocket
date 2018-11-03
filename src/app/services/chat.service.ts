@@ -17,6 +17,7 @@ export class ChatService {
   }
 
   sendComm(msg) {
+    msg.room = this.wsService.room;
     this.wsService.socket.emit('chat-message', msg);
   }
 

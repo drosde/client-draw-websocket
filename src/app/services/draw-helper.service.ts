@@ -63,20 +63,32 @@ export class DrawHelperService {
     }); 
   }
 
-  // Send data periodically
+  // 
+  /**
+   * Send data periodically
+   * Error: User information is sent with missing parts 
+   * due to the wait cycle of shipment vs. adding new paths while drawing
+   */
   private sendData(){
     setInterval(() => {
-      if(this.historialPoints.dot.length > 0 || this.historialPoints.lines.length > 0){
-          // compress lines
-          var data = this.historialPoints;
-          if(data.lines.length > 0) data.lines = this.compressData(JSON.stringify(data.lines));
-          if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
+        if(this.historialPoints.dot.length > 0 || this.historialPoints.lines.length > 0){
+            let { lines, dot }  = this.historialPoints;
+            let startLine = lines.length;
+            let startDot = dot.length;
+            console.log({startLine, startDot});
 
-          if(this.drawSocket.sendDrawedData(data)){
-              this.historialPoints.lines = [];
-              this.historialPoints.dot = [];
-          }
-      }
+            // compress lines
+            var data = this.historialPoints;
+            if(data.lines.length > 0) data.lines = this.compressData(JSON.stringify(data.lines));
+            if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
+
+            if(this.drawSocket.sendDrawedData(data)){
+                console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
+                this.historialPoints.lines = lines.slice(startLine, this.historialPoints.lines.length);
+                this.historialPoints.dot = dot.slice(startDot, this.historialPoints.dot.length);
+                console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
+            }
+        }
     }, 900);
   }
 

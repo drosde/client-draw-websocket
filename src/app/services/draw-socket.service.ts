@@ -30,7 +30,8 @@ export class DrawSocketService {
   sendDrawedData(data){
     let payload = {
       points: data,
-      user: this.chatSv.username
+      user: this.chatSv.username,
+      room: this.wssocket.room
     }
 
     return this.wssocket.socket.emit('drawed-data', payload)

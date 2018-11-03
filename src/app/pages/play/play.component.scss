@@ -43,18 +43,28 @@
             }
             .comm-author{
                 display: inline;
+                font-size: 0.75rem;
+                color: #079647ed;
             }
 
             .comm-content{
-                display: inline;
+                display: inline;                
+                font-size: 0.8rem;
             }
         }
     }
 
     .post-comment{
         .ui-float-label>label{
-            top: 25%;
+            // top: 25%;
             font-size: 0.7rem;
+        }
+
+        #input-comment{
+            border-radius: 2px;
+            border: 0;
+            height: 29px;
+            margin-bottom: 4px;        
         }
 
         textarea{

@@ -25,16 +25,22 @@
             </li>
           </ul>
         <div class="post-comment">
-          <span class="ui-float-label">
+            <span class="ui-float-label">
+                <input id="input-comment" type="text" 
+                      [(ngModel)]="comment" size="30" pInputText
+                      (keyup.enter)="sendComment(comment, $event)"> 
+                <label for="input-comment">Escribe un comentario</label>
+            </span>
+          <!-- <span class="ui-float-label">
             <textarea id="float-input" 
                       pInputTextarea 
                       label="Escribe un comentario" [(ngModel)]="comment"
                       (keyup.enter)="sendComment(comment, $event)"></textarea>
             <label for="float-input">Escribe un comentario</label>
-          </span>
+          </span> -->
 
           <div class="buttons">
-            <button pButton type="button" label="send"
+            <button pButton type="button" label="Enviar"
               (click)="sendComment(comment)"
               class="ui-button-raised ui-button-rounded"></button>
           </div>

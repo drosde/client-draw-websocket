@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+/** Pages */
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -11,14 +12,19 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 /** PrimeNG */
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FormsModule } from '@angular/forms'; // required for textarea - inputs with bindings
-import { ScrollPanelModule} from 'primeng/scrollpanel';
+import { FormsModule } from '@angular/forms'; // required for textarea/inputs bindings
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { InputTextModule } from 'primeng/inputtext';
 
-
+/** Services */
 import { WebSocketService } from './services/web-socket.service';
 import { ChatService } from './services/chat.service';
 import { DrawSocketService } from './services/draw-socket.service';
 import { DrawHelperService } from './services/draw-helper.service';
+import { ApiService } from './services/api.service';
+
+/** Others */
+import { HttpClientModule }    from '@angular/common/http';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -44,14 +50,17 @@ const appRoutes: Routes = [
     ),
     ButtonModule,
     InputTextareaModule,
-    FormsModule
+    FormsModule,    
+    InputTextModule,
+    ScrollPanelModule,
+    HttpClientModule
   ],
   providers: [
     WebSocketService,
     ChatService,
     DrawSocketService,
     DrawHelperService,
-    ScrollPanelModule
+    ApiService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
