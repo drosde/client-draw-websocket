@@ -1,0 +1,35 @@
+<div class="content">
+  <div class="p-grid">
+
+    <!-- PLAYERS TABLE -->
+    <div class="p-col-2">
+      <div class="menu-players">
+
+      </div>
+    </div> 
+
+    <!-- CANVAS -->
+    <div class="p-col-7">
+      <div class="main-draw">
+          <canvas id="main-canvas" width="500" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="p-col-3">
+      <div class="menu-chat">
+        <ul class="chat">
+          <li *ngFor="let comment of chatComments" class="comment">
+            <div class="comm-author">{{ comment.author }}: </div>
+            <div class="comm-content">{{ comment.content }}</div>
+          </li>
+        </ul>
+        <div class="post-comment">
+          <textarea pInputTextarea [(ngModel)]="comment"></textarea>
+          <button pButton type="button" label="send"
+            (click)="sendComment(comment)"
+            class="ui-button-raised ui-button-rounded"></button>
+        </div>
+      </div>
+    </div>
+</div>
