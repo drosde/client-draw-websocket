@@ -17,9 +17,23 @@
 
     border-left: 1px solid rgb(97, 97, 97);
     border-top: 1px solid rgb(97, 97, 97);
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+
     .chat{
         list-style: none;
         padding: 0;
+
+        // height: calc(100% - 20px);
+        overflow: hidden;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar { 
+            display: none; 
+        }
 
         .comment{
             padding: 2px;
@@ -34,6 +48,23 @@
             .comm-content{
                 display: inline;
             }
+        }
+    }
+
+    .post-comment{
+        .ui-float-label>label{
+            top: 25%;
+            font-size: 0.7rem;
+        }
+
+        textarea{
+            width: 100%;
+        }
+
+        .buttons{
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
         }
     }
 }

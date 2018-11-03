@@ -17,18 +17,27 @@
 
     <!-- CHAT -->
     <div class="p-col-3">
-      <div class="menu-chat">
-        <ul class="chat">
-          <li *ngFor="let comment of chatComments" class="comment">
-            <div class="comm-author">{{ comment.author }}: </div>
-            <div class="comm-content">{{ comment.content }}</div>
-          </li>
-        </ul>
+      <div class="menu-chat">        
+          <ul class="chat" #chatScroll [scrollTop]="chatScroll.scrollHeight">             
+            <li *ngFor="let comment of chatComments" class="comment">
+              <div class="comm-author">{{ comment.author }}: </div>
+              <div class="comm-content">{{ comment.content }}</div>
+            </li>
+          </ul>
         <div class="post-comment">
-          <textarea pInputTextarea [(ngModel)]="comment"></textarea>
-          <button pButton type="button" label="send"
-            (click)="sendComment(comment)"
-            class="ui-button-raised ui-button-rounded"></button>
+          <span class="ui-float-label">
+            <textarea id="float-input" 
+                      pInputTextarea 
+                      label="Escribe un comentario" [(ngModel)]="comment"
+                      (keyup.enter)="sendComment(comment, $event)"></textarea>
+            <label for="float-input">Escribe un comentario</label>
+          </span>
+
+          <div class="buttons">
+            <button pButton type="button" label="send"
+              (click)="sendComment(comment)"
+              class="ui-button-raised ui-button-rounded"></button>
+          </div>
         </div>
       </div>
     </div>
