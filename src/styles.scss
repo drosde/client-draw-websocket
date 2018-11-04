@@ -18,4 +18,13 @@ body{
     .ui-button{
         padding: 1px 6px;
     }
+
+    .ui-messages.ui-messages-error {
+        background-color: #ae1321 !important;
+        border: 0 none !important;
+        color: #ffffff !important;
+        .ui-messages-icon {
+            color: #0b0a1a !important;
+        }   
+    }
 }

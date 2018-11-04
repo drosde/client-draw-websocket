@@ -4,7 +4,14 @@
     <!-- PLAYERS TABLE -->
     <div class="p-col-2">
       <div class="menu-players">
-
+        <ul class="users">             
+          <li *ngFor="let user of usersRoom" class="user">
+            <!-- <div class="user-pic"> </div> -->
+            <div class="user-username">{{ user.username }}</div>
+            <div class="user-points">{{ user.points }} Puntos</div>
+            <div class="user-drawing"><span *ngIf="user.drawing" class="ion ion-md-create"></span></div>
+          </li>
+        </ul>
       </div>
     </div> 
 
@@ -25,19 +32,12 @@
             </li>
           </ul>
         <div class="post-comment">
-            <span class="ui-float-label">
-                <input id="input-comment" type="text" 
-                      [(ngModel)]="comment" size="30" pInputText
-                      (keyup.enter)="sendComment(comment, $event)"> 
-                <label for="input-comment">Escribe un comentario</label>
-            </span>
-          <!-- <span class="ui-float-label">
-            <textarea id="float-input" 
-                      pInputTextarea 
-                      label="Escribe un comentario" [(ngModel)]="comment"
-                      (keyup.enter)="sendComment(comment, $event)"></textarea>
-            <label for="float-input">Escribe un comentario</label>
-          </span> -->
+          <span class="ui-float-label">
+              <input id="input-comment" type="text" 
+                    [(ngModel)]="comment" size="30" pInputText
+                    (keyup.enter)="sendComment(comment, $event)"> 
+              <label for="input-comment">Escribe un comentario</label>
+          </span>
 
           <div class="buttons">
             <button pButton type="button" label="Enviar"

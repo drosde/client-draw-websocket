@@ -15,6 +15,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule } from '@angular/forms'; // required for textarea/inputs bindings
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { InputTextModule } from 'primeng/inputtext';
+import { ProgressSpinnerModule} from 'primeng/progressspinner';
 
 /** Services */
 import { WebSocketService } from './services/web-socket.service';
@@ -22,9 +23,13 @@ import { ChatService } from './services/chat.service';
 import { DrawSocketService } from './services/draw-socket.service';
 import { DrawHelperService } from './services/draw-helper.service';
 import { ApiService } from './services/api.service';
+import { MessagesModule} from 'primeng/messages';
+import { MessageModule} from 'primeng/message';
 
 /** Others */
-import { HttpClientModule }    from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PlayerSocketService } from './services/player-socket.service';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -48,19 +53,27 @@ const appRoutes: Routes = [
       appRoutes,
       // { enableTracing: true } // <- activate only on debug
     ),
+    
     ButtonModule,
     InputTextareaModule,
     FormsModule,    
     InputTextModule,
     ScrollPanelModule,
-    HttpClientModule
+    ProgressSpinnerModule,
+    MessagesModule,
+    MessageModule,
+
+
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [
     WebSocketService,
     ChatService,
     DrawSocketService,
     DrawHelperService,
-    ApiService
+    ApiService,
+    PlayerSocketService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
