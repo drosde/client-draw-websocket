@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { Observable } from 'rxjs/Observable';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerSocketService {
 
+  player:User;
+  playerId: string;
+  
   constructor(private wssocket:WebSocketService) { }
 
   /**

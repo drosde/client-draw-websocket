@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WebSocketService } from './services/web-socket.service';
-import { ChatService } from './services/chat.service';
+import { PlayerSocketService } from './services/player-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +10,13 @@ import { ChatService } from './services/chat.service';
 export class AppComponent {
   title = 'clientSockets';
 
-  constructor(private wsocket:WebSocketService, private chatservice:ChatService){
+  constructor(private wsocket:WebSocketService, private playerserv:PlayerSocketService){
     wsocket.connect().then(
-      data => { 
+      id => { 
         console.log("Connected to ws server");
-        this.chatservice.username = this.wsocket.socket.id;
+        // this.socket.on('user-id', data => console.log(`Received ID: ${data} - ClientID ${this.socket.id}`));
+        // console.log('ID: ', id)
+        this.playerserv.playerId = id;
       },
       rejected => console.log("rejected")
     )

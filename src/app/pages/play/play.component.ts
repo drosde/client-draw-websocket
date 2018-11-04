@@ -56,6 +56,12 @@ export class PlayComponent implements OnInit {
     this.playerserv.getInitialUsers().subscribe(data => {
       // this.usersRoom = [...new Set([...data ,...this.usersRoom])];
       this.usersRoom = data;
+
+      let me = this.usersRoom.find(user => user.id == this.playerserv.playerId);
+      
+      // console.log('users:', {data, me, id: this.playerserv.playerId});
+      
+      if(me && me.drawing) this.setDrawingStatus(true);
     });
 
     this.playerserv.drawerUpdates().subscribe(data => {
@@ -87,5 +93,10 @@ export class PlayComponent implements OnInit {
 
       this.comment = "";
     }
+  }
+
+  setDrawingStatus(status:boolean){
+    this.drawHelper.isDrawer = status;
+    console.log("Drawind status", this.drawHelper.isDrawer);
   }
 }

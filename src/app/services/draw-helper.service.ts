@@ -36,7 +36,7 @@ export class DrawHelperService {
         this.setEventsListenersDraw();
 
         this.drawSocket.subscribeDraw().subscribe(data => {
-        this.drawData(data.points);
+            this.drawData(data.points);
         });
 
         this.sendData();
@@ -72,14 +72,21 @@ export class DrawHelperService {
      * due to the wait cycle of shipment vs. adding new paths while drawing
      */
     private sendData(){
-        if(!this.isDrawer) {
-            if(this.intervalData){
-                clearInterval(this.intervalData);
-            }
-            return;
-        }
+        // if(!this.isDrawer) {
+        //     if(this.intervalData){
+        //         clearInterval(this.intervalData);
+        //     }
+        //     return false;
+        // }
 
         this.intervalData = setInterval(() => {
+            if(!this.isDrawer) {
+                // if(this.intervalData){
+                //     clearInterval(this.intervalData);
+                // }
+                return false;
+            }
+            
             if(this.historialPoints.dot.length > 0 || this.historialPoints.lines.length > 0){
                 let { lines, dot }  = this.historialPoints;
                 let startLine = lines.length;
@@ -102,23 +109,27 @@ export class DrawHelperService {
     }
 
     private setEventsListenersDraw(){    
-        if(!this.isDrawer){
-            this.historialPoints.lines = [];
-            this.historialPoints.dot = [];
-            return;
-        }
+        // if(!this.isDrawer){
+        //     this.historialPoints.lines = [];
+        //     this.historialPoints.dot = [];
+        //     return;
+        // }
 
         // single click
         this.canvasElement.addEventListener('click', ((ev) => {
-            if(!this.isDrawer) return;
-            this.historialPoints.dot.push({x: ev.layerX, y:ev.layerY});
-            this.canvasCtx.fillRect(ev.layerX,ev.layerY,3,3);
+            // console.log(this.isDrawer);            
+            if(this.isDrawer){ 
+                this.historialPoints.dot.push({x: ev.layerX, y:ev.layerY});
+                this.canvasCtx.fillRect(ev.layerX,ev.layerY,3,3);
+            }
+            // console.log(this.isDrawer);
         }));
 
         // starts draw-drag
         this.canvasElement.addEventListener('mousedown', (() => {
             setTimeout(() => {
-                if(!this.isDrawer) return;
+                if(!this.isDrawer){ return false; }
+                
                 this.holdingClick = true;
                 this.canvasCtx.beginPath();
             }, 50);
@@ -126,14 +137,16 @@ export class DrawHelperService {
 
         // ends draw-drag
         this.canvasElement.addEventListener('mouseup', (() => {
-            if(!this.isDrawer) return;
+            if(!this.isDrawer){ return false; }
+            
             this.holdingClick = false;
             this.continuePrevious = false;
         }), false);
 
         // draw a continuous line while drags
         this.canvasElement.addEventListener('mousemove', ((ev) => {
-            if(!this.isDrawer) return;
+            if(!this.isDrawer){ return false; }
+            
             if(this.holdingClick){      
                 if(this.continuePrevious){
                     // si contiuamos el anterior debemos poner el puntero en el punto anterior
