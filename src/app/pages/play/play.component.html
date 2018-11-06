@@ -9,7 +9,7 @@
             <!-- <div class="user-pic"> </div> -->
             <div class="user-username">{{ user.username }}</div>
             <div class="user-points">{{ user.points }} Puntos</div>
-            <div class="user-drawing"><span *ngIf="user.drawing" class="ion ion-md-create"></span></div>
+            <div class="user-drawing"><span *ngIf="user.id === playerTurnID" class="ion ion-md-create"></span></div>
           </li>
         </ul>
       </div>
@@ -18,6 +18,10 @@
     <!-- CANVAS -->
     <div class="p-col-7">
       <div class="main-draw">
+          <div class="game-hint">
+            <p>{{ wordHint }}</p>
+          </div>
+          
           <canvas id="main-canvas" width="500" height="300"></canvas>
       </div>
     </div>

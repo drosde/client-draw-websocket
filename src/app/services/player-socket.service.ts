@@ -34,18 +34,18 @@ export class PlayerSocketService {
   }
 
   /**
-   * RETURN INITIAL USERS WHEN YOU JOIN A ROOM
+   * RETURN INITIAL INFO. WHEN YOU JOIN A ROOM
    */
-  getInitialUsers(): Observable<any>{
+  getRoomInfo(): Observable<any>{
     let observable = new Observable(observer => {
-      this.wssocket.socket.on('users-in-room', (data) => {
+      this.wssocket.socket.on('room-info', (data) => {
         observer.next(data);
       })
 
       // unsubscribe
       return () => {
-        if(this.wssocket.socket.hasListeners('users-in-room')){
-          this.wssocket.socket.removeEventListener('users-in-room');
+        if(this.wssocket.socket.hasListeners('room-info')){
+          this.wssocket.socket.removeEventListener('room-info');
         }
       }
     });
@@ -74,18 +74,18 @@ export class PlayerSocketService {
   }
 
   /**
-   * RETURN GAME DRAWER UPDATES
+   * RETURN GAME DAVINCI UPDATES
    */
-  drawerUpdates(): Observable<any>{
+  newDavinciUpdate(): Observable<any>{
     let observable = new Observable(observer => {
-      this.wssocket.socket.on('game-drawer-update', (data) => {
+      this.wssocket.socket.on('game-davinci-update', (data) => {
         observer.next(data);
       })
 
       // unsubscribe
       return () => {
-        if(this.wssocket.socket.hasListeners('game-drawer-update')){
-          this.wssocket.socket.removeEventListener('game-drawer-update');
+        if(this.wssocket.socket.hasListeners('game-davinci-update')){
+          this.wssocket.socket.removeEventListener('game-davinci-update');
         }
       }
     });

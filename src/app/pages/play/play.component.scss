@@ -92,6 +92,14 @@ $four: #2e99b0;
 .main-draw{
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    .game-hint{
+        p{
+            letter-spacing: 0.65rem;
+        }
+    }
 }
 
 .p-grid{ margin: 0; }

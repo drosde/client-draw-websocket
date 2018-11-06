@@ -17,7 +17,7 @@ export class DrawHelperService {
         lines: [],
         dot: [] 
     };
-    public isDrawer:boolean = false;
+    public isDavinci:boolean = false;
     private intervalData: any;
 
     /**
@@ -43,6 +43,8 @@ export class DrawHelperService {
     }
 
     private drawData(data){
+        console.log(data);
+        
         var desl = this.decompressData(data.lines);
         var desd = this.decompressData(data.dot);
 
@@ -72,7 +74,7 @@ export class DrawHelperService {
      * due to the wait cycle of shipment vs. adding new paths while drawing
      */
     private sendData(){
-        // if(!this.isDrawer) {
+        // if(!this.isDavinci) {
         //     if(this.intervalData){
         //         clearInterval(this.intervalData);
         //     }
@@ -80,7 +82,7 @@ export class DrawHelperService {
         // }
 
         this.intervalData = setInterval(() => {
-            if(!this.isDrawer) {
+            if(!this.isDavinci) {
                 // if(this.intervalData){
                 //     clearInterval(this.intervalData);
                 // }
@@ -109,7 +111,7 @@ export class DrawHelperService {
     }
 
     private setEventsListenersDraw(){    
-        // if(!this.isDrawer){
+        // if(!this.isDavinci){
         //     this.historialPoints.lines = [];
         //     this.historialPoints.dot = [];
         //     return;
@@ -117,18 +119,18 @@ export class DrawHelperService {
 
         // single click
         this.canvasElement.addEventListener('click', ((ev) => {
-            // console.log(this.isDrawer);            
-            if(this.isDrawer){ 
+            // console.log(this.isDavinci);            
+            if(this.isDavinci){ 
                 this.historialPoints.dot.push({x: ev.layerX, y:ev.layerY});
                 this.canvasCtx.fillRect(ev.layerX,ev.layerY,3,3);
             }
-            // console.log(this.isDrawer);
+            // console.log(this.isDavinci);
         }));
 
         // starts draw-drag
         this.canvasElement.addEventListener('mousedown', (() => {
             setTimeout(() => {
-                if(!this.isDrawer){ return false; }
+                if(!this.isDavinci){ return false; }
                 
                 this.holdingClick = true;
                 this.canvasCtx.beginPath();
@@ -137,7 +139,7 @@ export class DrawHelperService {
 
         // ends draw-drag
         this.canvasElement.addEventListener('mouseup', (() => {
-            if(!this.isDrawer){ return false; }
+            if(!this.isDavinci){ return false; }
             
             this.holdingClick = false;
             this.continuePrevious = false;
@@ -145,7 +147,7 @@ export class DrawHelperService {
 
         // draw a continuous line while drags
         this.canvasElement.addEventListener('mousemove', ((ev) => {
-            if(!this.isDrawer){ return false; }
+            if(!this.isDavinci){ return false; }
             
             if(this.holdingClick){      
                 if(this.continuePrevious){

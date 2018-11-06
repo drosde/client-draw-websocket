@@ -21,12 +21,23 @@ export class PlayComponent implements OnInit {
   chatElem: HTMLElement;
   user: User;
 
+  wordHint:string = "H__A";
+  playerTurnID: string;
+
   constructor(
     private chatservice:ChatService, private drawservice:DrawSocketService,
     private drawHelper:DrawHelperService, private playerserv:PlayerSocketService
   ) { }
 
   ngOnInit() {
+
+    this.user = {
+      username: this.chatservice.username,
+      drawing: false,
+      points: 0,
+      id: this.playerserv.playerId
+    }
+
     this.chatElem = document.querySelector('.chat');
     this.chatComments = [];
     this.usersRoom = [];
@@ -53,19 +64,25 @@ export class PlayComponent implements OnInit {
     );
 
     // Get users when we connect to the ws server
-    this.playerserv.getInitialUsers().subscribe(data => {
+    this.playerserv.getRoomInfo().subscribe(data => {
       // this.usersRoom = [...new Set([...data ,...this.usersRoom])];
-      this.usersRoom = data;
 
-      let me = this.usersRoom.find(user => user.id == this.playerserv.playerId);
+      console.log('ROOM INFO', data);
+      this.usersRoom = data.clients;
+      this.playerTurnID = data.playerTurnID;
+
+      // let me = this.usersRoom.find(user => user.id == this.playerserv.playerId);
       
-      // console.log('users:', {data, me, id: this.playerserv.playerId});
+      // // console.log('users:', {data, me, id: this.playerserv.playerId});
       
-      if(me && me.drawing) this.setDrawingStatus(true);
+      // if(me && me.drawing) this.setDrawingStatus(true);
     });
 
-    this.playerserv.drawerUpdates().subscribe(data => {
-      console.log('drawer updates', data);
+    this.playerserv.newDavinciUpdate().subscribe(playerTurnID => {
+      // console.log('davinci updates', {playerTurnID, myid:this.playerserv.playerId});
+      this.playerTurnID = playerTurnID;
+      this.user.drawing = playerTurnID == this.playerserv.playerId;
+      this.setDrawingStatus(this.user.drawing);
     });
 
     this.playerserv.pointsUpdates().subscribe(data => {
@@ -96,7 +113,7 @@ export class PlayComponent implements OnInit {
   }
 
   setDrawingStatus(status:boolean){
-    this.drawHelper.isDrawer = status;
-    console.log("Drawind status", this.drawHelper.isDrawer);
+    this.drawHelper.isDavinci = status;
+    console.log("Drawind status", this.drawHelper.isDavinci);
   }
 }
