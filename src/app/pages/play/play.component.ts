@@ -21,7 +21,7 @@ export class PlayComponent implements OnInit {
   chatElem: HTMLElement;
   user: User;
 
-  wordHint:string = "H__A";
+  wordHint:string;
   playerTurnID: string;
 
   constructor(
@@ -51,7 +51,15 @@ export class PlayComponent implements OnInit {
   setupSubscribers(): any {  
     // Chat comments
     this.chatservice.getComms().subscribe(comm => {
-      this.chatComments.push(comm);
+      if(this.usersRoom){
+        let user = this.usersRoom.find(user => user.id == comm.author);  // find user with id
+        
+        let com:ChatComment = {
+          author: user.username || "nn",
+          content: comm.content
+        };
+        this.chatComments.push(com);
+      }
     });
 
     // that
@@ -71,15 +79,10 @@ export class PlayComponent implements OnInit {
       this.usersRoom = data.clients;
       this.playerTurnID = data.playerTurnID;
 
-      // let me = this.usersRoom.find(user => user.id == this.playerserv.playerId);
-      
-      // // console.log('users:', {data, me, id: this.playerserv.playerId});
-      
-      // if(me && me.drawing) this.setDrawingStatus(true);
+      this.wordHint = "_".repeat(data.wordLength);
     });
 
     this.playerserv.newDavinciUpdate().subscribe(playerTurnID => {
-      // console.log('davinci updates', {playerTurnID, myid:this.playerserv.playerId});
       this.playerTurnID = playerTurnID;
       this.user.drawing = playerTurnID == this.playerserv.playerId;
       this.setDrawingStatus(this.user.drawing);
@@ -90,19 +93,18 @@ export class PlayComponent implements OnInit {
     });
 
     this.playerserv.wordHintsUpdates().subscribe(data => {
-      console.log('word hints', data);
+      this.wordHint = data.hint;
     })
   }
 
   sendComment(msg:string, event?:any) {
-    // prevent default event
     if(event) event.preventDefault();
 
     msg = msg.trim();
 
     if(msg && msg.length > 0){
       let comm:ChatComment = {
-        author: this.chatservice.username,
+        author: this.playerserv.playerId,
         content: msg
       }
 
