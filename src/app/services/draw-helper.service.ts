@@ -101,10 +101,10 @@ export class DrawHelperService {
                 if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
 
                 if(this.drawSocket.sendDrawedData(data)){
-                    console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
+                    // console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
                     this.historialPoints.lines = lines.slice(startLine, this.historialPoints.lines.length);
                     this.historialPoints.dot = dot.slice(startDot, this.historialPoints.dot.length);
-                    console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
+                    // console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
                 }
             }
         }, 900);

@@ -20,4 +20,15 @@ export class WebSocketService {
       });
     })
   }
+
+  disconnect(): Promise<boolean>{
+    return new Promise<boolean>((resolve, reject) => {   
+      this.socket.disconnect();
+
+      this.socket.on('disconnect', () => {
+        resolve(true);
+        console.log('Desconnected from ws server');
+      });
+    })
+  }
 }

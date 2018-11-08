@@ -5,6 +5,7 @@ import { DrawSocketService } from '../../services/draw-socket.service';
 import { DrawHelperService } from '../../services/draw-helper.service';
 import { User } from 'src/app/models/user';
 import { PlayerSocketService } from 'src/app/services/player-socket.service';
+import { WebSocketService } from 'src/app/services/web-socket.service';
 
 @Component({
   selector: 'app-play',
@@ -25,9 +26,16 @@ export class PlayComponent implements OnInit {
   playerTurnID: string;
 
   constructor(
-    private chatservice:ChatService, private drawservice:DrawSocketService,
+    private chatservice:ChatService, private wssocket:WebSocketService,
     private drawHelper:DrawHelperService, private playerserv:PlayerSocketService
   ) { }
+
+  ngOnDestroy(){
+    if(this.wssocket.room){
+      this.wssocket.socket.emit('leave-room', {room: this.wssocket.room});
+      console.log('leaving room');
+    } 
+  }
 
   ngOnInit() {
 
@@ -89,12 +97,19 @@ export class PlayComponent implements OnInit {
     });
 
     this.playerserv.pointsUpdates().subscribe(data => {
-      console.log('points update', data);
+      let toUpdate = this.usersRoom.find(user => user.id == data.user);
+      toUpdate.points = data.points;
     });
 
-    this.playerserv.wordHintsUpdates().subscribe(data => {
-      this.wordHint = data.hint;
-    })
+    this.playerserv.wordHintsUpdates().subscribe(
+      (data) => {
+        if(data.type == "hint-update"){
+          this.wordHint = data.hint;
+        }else if(data.type == 'word-update'){
+          this.wordHint = "_".repeat(data.wordLength);
+        }
+      },
+      (err) => console.error(err));
   }
 
   sendComment(msg:string, event?:any) {
@@ -116,6 +131,5 @@ export class PlayComponent implements OnInit {
 
   setDrawingStatus(status:boolean){
     this.drawHelper.isDavinci = status;
-    console.log("Drawind status", this.drawHelper.isDavinci);
   }
 }
