@@ -22,7 +22,8 @@ export class PlayComponent implements OnInit {
   chatElem: HTMLElement;
   user: User;
 
-  wordHint:string;
+  wordHint:string = "_";
+  word2draw:string;
   playerTurnID: string;
 
   constructor(
@@ -103,10 +104,19 @@ export class PlayComponent implements OnInit {
 
     this.playerserv.wordHintsUpdates().subscribe(
       (data) => {
-        if(data.type == "hint-update"){
-          this.wordHint = data.hint;
-        }else if(data.type == 'word-update'){
-          this.wordHint = "_".repeat(data.wordLength);
+        switch (data.type) {
+          case "hint-update":
+            this.wordHint = data.hint;
+            break; 
+          case 'word-2draw':
+            this.wordHint = "_".repeat(data.word.length);
+            this.word2draw = data.word;
+            break; 
+          case 'word-update':
+            this.wordHint = "_".repeat(data.wordLength);;
+            break;
+          default:
+            break;
         }
       },
       (err) => console.error(err));

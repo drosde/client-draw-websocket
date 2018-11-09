@@ -19,8 +19,14 @@
     <div class="p-col-7">
       <div class="main-draw">
           <div class="game-hint">
-            <!-- <p [(innerHTML)]="wordHint"></p> -->
-            <p>{{ wordHint }}</p>
+            <div class="word-hint">
+              <!-- <p>{{ wordHint }}</p> -->
+              <p *ngFor="let char of wordHint.split('')">{{ char == "_" ? char + "_" : char }}</p>
+            </div>
+            <div class="word-2draw" *ngIf="user.drawing && word2draw">
+              <!-- <p *ngIf="user.drawing" class="word2draw">{{ word2draw }}</p> -->
+              <p *ngFor="let char of word2draw.split('')">{{ char }}</p>
+            </div>
           </div>
           
           <canvas id="main-canvas" width="500" height="300"></canvas>

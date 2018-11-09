@@ -97,9 +97,37 @@ $four: #2e99b0;
     align-items: center;
 
     .game-hint{
-        p{
-            letter-spacing: 0.65rem;
+        position: relative;
+
+        .word-hint, .word-2draw{
+            display: grid; 
+            height: 0px;
+            grid-template-columns: repeat(50, max-content);
         }
+
+        p{
+            display: inline-block;
+            max-width: 16px;
+            width: 175px;
+            text-align: center;
+            margin-left: 5px;
+
+            // position: absolute;
+            // top: 0;
+            // left: 0;
+            
+            // letter-spacing: 0.65rem;
+            // width: 100%;
+        }
+    }
+
+    #main-canvas{
+        margin-top: 68px;
+    }
+
+    .word-2draw{
+        opacity: .5;
+        text-indent: -3px;
     }
 }
 

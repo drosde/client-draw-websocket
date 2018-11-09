@@ -48,7 +48,9 @@ export class DrawHelperService {
         var desl = this.decompressData(data.lines);
         var desd = this.decompressData(data.dot);
 
-        if(desl.length > 0) data.lines = JSON.parse(desl);
+        if(desl.length > 0){ 
+            data.lines = JSON.parse(desl);
+        } 
         if(desd.length > 0) data.dot = JSON.parse(desd);
 
         this.canvasCtx.beginPath();
@@ -195,13 +197,14 @@ export class DrawHelperService {
             if(i % 2 != 0 && lineasString[ind].match('false') == null){
                 glued += ";";    
             }else{ 
-                glued += ",";        
+                glued += ",";
+                // if(i != lineasString.length-1) glued += ",";
             }
         });
 
         let convert = glued.replace(/(?<=[0-9]),(?!.[a-z])/g, ',"y":')
         .replace(/((?<=;)|^(?=[0-9]))(?!$)/g, '"x":').replace(/;(?!$)/g, '},{')
-        .replace(/(false|true)/g, '"c":$1').replace(/;($)/, '}');
+        .replace(/(false|true)/g, '"c":$1').replace(/;|,($)/, '}');
 
         return "[{" + convert + "]";
     }
