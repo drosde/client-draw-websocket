@@ -33,6 +33,8 @@ export class PlayComponent implements OnInit {
 
   ngOnDestroy(){
     if(this.wssocket.room){
+      this.setDrawingStatus(false);
+
       this.wssocket.socket.emit('leave-room', {room: this.wssocket.room});
       console.log('leaving room');
     } 
@@ -72,10 +74,17 @@ export class PlayComponent implements OnInit {
     });
 
     // that
-    this.playerserv.newUserConnected().subscribe(
-      (user:User) => {
-          console.log('New user connected!', user);
-          this.usersRoom.push(user);
+    this.playerserv.newUserConnOrLeave().subscribe(
+      (data) => {
+          if(data.type == "join"){
+            console.log('New user connected!', data.user);
+            this.usersRoom.push(data.user);
+          }else if(data.type == "leave"){
+            this.usersRoom = this.usersRoom.filter(user => user.id != data.id);
+          }
+
+          
+          console.log('User just ' +data.type  + " the room");
       },
       (err:any) => console.error("Error al obtener nuevos usuarios", err)
     );
@@ -88,7 +97,7 @@ export class PlayComponent implements OnInit {
       this.usersRoom = data.clients;
       this.playerTurnID = data.playerTurnID;
 
-      this.wordHint = "_".repeat(data.wordLength);
+      this.wordHint = data.wordHint ? data.wordHint : "_".repeat(data.wordLength);
     });
 
     this.playerserv.newDavinciUpdate().subscribe(playerTurnID => {

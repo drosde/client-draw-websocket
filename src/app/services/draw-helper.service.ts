@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DrawSocketService } from './draw-socket.service';
+import { PlayerSocketService } from './player-socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class DrawHelperService {
      * Draw and send data
      * @param canvasElement Canvas HTML element
      */
-    constructor(private drawSocket:DrawSocketService) { }
+    constructor(private drawSocket:DrawSocketService, private playerSocket:PlayerSocketService) { }
 
     setUp(canvasElement:HTMLCanvasElement){       
         this.canvasElement = canvasElement;
@@ -42,9 +43,7 @@ export class DrawHelperService {
         this.sendData();
     }
 
-    private drawData(data){
-        console.log(data);
-        
+    private drawData(data){        
         var desl = this.decompressData(data.lines);
         var desd = this.decompressData(data.dot);
 
@@ -76,18 +75,8 @@ export class DrawHelperService {
      * due to the wait cycle of shipment vs. adding new paths while drawing
      */
     private sendData(){
-        // if(!this.isDavinci) {
-        //     if(this.intervalData){
-        //         clearInterval(this.intervalData);
-        //     }
-        //     return false;
-        // }
-
         this.intervalData = setInterval(() => {
             if(!this.isDavinci) {
-                // if(this.intervalData){
-                //     clearInterval(this.intervalData);
-                // }
                 return false;
             }
             
@@ -102,7 +91,7 @@ export class DrawHelperService {
                 if(data.lines.length > 0) data.lines = this.compressData(JSON.stringify(data.lines));
                 if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
 
-                if(this.drawSocket.sendDrawedData(data)){
+                if(this.drawSocket.sendDrawedData(data, this.playerSocket.playerId)){
                     // console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
                     this.historialPoints.lines = lines.slice(startLine, this.historialPoints.lines.length);
                     this.historialPoints.dot = dot.slice(startDot, this.historialPoints.dot.length);
@@ -113,20 +102,13 @@ export class DrawHelperService {
     }
 
     private setEventsListenersDraw(){    
-        // if(!this.isDavinci){
-        //     this.historialPoints.lines = [];
-        //     this.historialPoints.dot = [];
-        //     return;
-        // }
 
         // single click
-        this.canvasElement.addEventListener('click', ((ev) => {
-            // console.log(this.isDavinci);            
+        this.canvasElement.addEventListener('click', ((ev) => {      
             if(this.isDavinci){ 
                 this.historialPoints.dot.push({x: ev.layerX, y:ev.layerY});
                 this.canvasCtx.fillRect(ev.layerX,ev.layerY,3,3);
             }
-            // console.log(this.isDavinci);
         }));
 
         // starts draw-drag
@@ -184,7 +166,7 @@ export class DrawHelperService {
     }
 
     private decompressData(datastring){
-        if(!datastring || datastring.length <= 0) return "";
+        if(!datastring || datastring.length <= 0 || typeof datastring != "string") return "";
 
         var lineasString = datastring.split(','); 
         var glued = "";
@@ -207,5 +189,10 @@ export class DrawHelperService {
         .replace(/(false|true)/g, '"c":$1').replace(/;|,($)/, '}');
 
         return "[{" + convert + "]";
+    }
+
+    getDateLog(){
+        let d = new Date();
+        return d.getHours()+ ":" + d.getMinutes() +":"+ d.getSeconds();
     }
 }

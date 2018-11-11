@@ -27,10 +27,10 @@ export class DrawSocketService {
     return observable;
   }
 
-  sendDrawedData(data){
+  sendDrawedData(data, playerId){
     let payload = {
+      id: playerId,
       points: data,
-      user: this.chatSv.username,
       room: this.wssocket.room
     }
 

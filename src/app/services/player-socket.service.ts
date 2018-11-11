@@ -16,16 +16,16 @@ export class PlayerSocketService {
   /**
    * RETURN EVERY NEW USER THAT CONNECTS TO THIS ROOM
    */
-  newUserConnected(): Observable<any>{
+  newUserConnOrLeave(): Observable<any>{
     let observable = new Observable(observer => {
-      this.wssocket.socket.on('user-connected-room', (data) => {
+      this.wssocket.socket.on('user-join-leave-room', (data) => {
         observer.next(data);
       })
 
       // unsubscribe
       return () => {
-        if(this.wssocket.socket.hasListeners('user-connected-room')){
-          this.wssocket.socket.removeEventListener('user-connected-room');
+        if(this.wssocket.socket.hasListeners('user-join-leave-room')){
+          this.wssocket.socket.removeEventListener('user-join-leave-room');
         }
       }
     });
