@@ -56,7 +56,7 @@ export class PlayerSocketService {
   /**
    * RETURN GAME POINTS UPDATES
    */
-  pointsUpdates(): Observable<any>{
+  scoreUpdate(): Observable<any>{
     let observable = new Observable(observer => {
       this.wssocket.socket.on('game-points-update', (data) => {
         observer.next(data);

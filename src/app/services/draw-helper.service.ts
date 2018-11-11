@@ -38,6 +38,7 @@ export class DrawHelperService {
 
         this.drawSocket.subscribeDraw().subscribe(data => {
             this.drawData(data.points);
+            console.log(data);
         });
 
         this.sendData();

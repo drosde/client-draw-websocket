@@ -2,6 +2,6 @@ export interface User{
     username: string,
     picture?: string,
     drawing: boolean,
-    points: number,
+    score: number,
     id: string
 }

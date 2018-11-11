@@ -45,7 +45,7 @@ export class PlayComponent implements OnInit {
     this.user = {
       username: this.chatservice.username,
       drawing: false,
-      points: 0,
+      score: 0,
       id: this.playerserv.playerId
     }
 
@@ -106,9 +106,9 @@ export class PlayComponent implements OnInit {
       this.setDrawingStatus(this.user.drawing);
     });
 
-    this.playerserv.pointsUpdates().subscribe(data => {
-      let toUpdate = this.usersRoom.find(user => user.id == data.user);
-      toUpdate.points = data.points;
+    this.playerserv.scoreUpdate().subscribe(data => {
+      let usertoUpdate = this.usersRoom.find(user => user.id == data.user);
+      usertoUpdate.score = data.score;
     });
 
     this.playerserv.wordHintsUpdates().subscribe(
