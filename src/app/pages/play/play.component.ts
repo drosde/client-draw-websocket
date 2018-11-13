@@ -26,6 +26,8 @@ export class PlayComponent implements OnInit {
   word2draw:string;
   playerTurnID: string;
 
+  colors: Array<String>;
+
   constructor(
     private chatservice:ChatService, private wssocket:WebSocketService,
     private drawHelper:DrawHelperService, private playerserv:PlayerSocketService
@@ -57,6 +59,15 @@ export class PlayComponent implements OnInit {
 
     let canvas = document.getElementById('main-canvas') as HTMLCanvasElement;
     this.drawHelper.setUp(canvas);
+
+    this.colors = [
+      "#fff",
+      "#ff0000",
+      "#00ff1f",
+      "#ff006a",
+      "#00f3ff",
+      "#fbff00"
+    ];
   }
 
   setupSubscribers(): any {  
@@ -150,5 +161,23 @@ export class PlayComponent implements OnInit {
 
   setDrawingStatus(status:boolean){
     this.drawHelper.isDavinci = status;
+  }
+
+  changeColorPen(ev, color: string){
+    if(ev) {
+      ev.preventDefault();
+      ev.srcElement.blur();
+    }
+
+    this.drawHelper.changeColor(color);
+  }
+
+  clearCanvas(ev){
+    if(ev) {
+      ev.preventDefault();
+      ev.srcElement.blur();
+    }
+
+    this.drawHelper.clearCanvas();
   }
 }
