@@ -45,11 +45,6 @@ export class DrawHelperService {
 
         this.drawSocket.subClearCanvas().subscribe(data => {
             this.clearCanvas();
-            // console.log(data);
-        });
-
-        this.drawSocket.subChangeColor().subscribe(color => {
-            this.changeColor(color, true);
         });
 
         this.sendData();
@@ -63,6 +58,8 @@ export class DrawHelperService {
             data.lines = JSON.parse(desl);
         } 
         if(desd.length > 0) data.dot = JSON.parse(desd);
+
+        this.changeColor(data.color);
         
         this.canvasCtx.beginPath();
         
@@ -82,35 +79,30 @@ export class DrawHelperService {
     
     // 
     /**
-     * Send data periodically
-     * Error: User information is sent with missing parts 
-     * due to the wait cycle of shipment vs. adding new paths while drawing
+     * Send data once the event 'mouseUP' has been triggered
      */
     private sendData(){
-        this.intervalData = setInterval(() => {
-            if(!this.isDavinci) {
-                return false;
-            }
+        if(!this.isDavinci) {
+            return false;
+        }
+
+        if(this.historialPoints.dot.length > 0 || this.historialPoints.lines.length > 0){
+            let { lines, dot }  = this.historialPoints;
+            let startLine = lines.length;
+            let startDot = dot.length;
+            // console.log({startLine, startDot});
             
-            if(this.historialPoints.dot.length > 0 || this.historialPoints.lines.length > 0){
-                let { lines, dot }  = this.historialPoints;
-                let startLine = lines.length;
-                let startDot = dot.length;
-                console.log({startLine, startDot});
-                
-                // compress lines
-                var data = this.historialPoints;
-                if(data.lines.length > 0) data.lines = this.compressData(JSON.stringify(data.lines));
-                if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
-                
-                if(this.drawSocket.sendDrawedData(data, this.playerSocket.playerId)){
-                    // console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
-                    this.historialPoints.lines = lines.slice(startLine, this.historialPoints.lines.length);
-                    this.historialPoints.dot = dot.slice(startDot, this.historialPoints.dot.length);
-                    // console.log({lineslngAfter: this.historialPoints.lines.length, lngdotAfter: this.historialPoints.dot.length})
-                }
-            }
-        }, 900);
+            // compress lines
+            var data = this.historialPoints as any;
+            if(data.lines.length > 0) data.lines = this.compressData(JSON.stringify(data.lines));
+            if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
+            data.color = this.color;
+            
+            this.drawSocket.sendDrawedData(data, this.playerSocket.playerId);
+            
+            this.historialPoints.lines = lines.slice(startLine, this.historialPoints.lines.length);
+            this.historialPoints.dot = dot.slice(startDot, this.historialPoints.dot.length);
+        }
     }
     
     private setEventsListenersDraw(){    
@@ -130,6 +122,8 @@ export class DrawHelperService {
                 
                 this.holdingClick = true;
                 this.canvasCtx.beginPath();
+
+                this.intervalData = setInterval(() => this.sendData(), 3000);
             }, 50);
         }), false);
         
@@ -139,6 +133,10 @@ export class DrawHelperService {
             
             this.holdingClick = false;
             this.continuePrevious = false;
+
+            this.sendData();
+
+            if(this.intervalData) clearInterval(this.intervalData);
         }), false);
         
         // draw a continuous line while drags
@@ -214,9 +212,9 @@ export class DrawHelperService {
         
         this.color = color;
         
-        if(!fromObsv){
-            this.drawSocket.sendChangeColor(color, this.playerSocket.playerId);
-        }
+        // if(!fromObsv){
+        //     this.drawSocket.sendChangeColor(color, this.playerSocket.playerId);
+        // }
     }
     
     clearCanvas(){

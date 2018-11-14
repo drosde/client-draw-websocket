@@ -88,14 +88,13 @@ export class PlayComponent implements OnInit {
     this.playerserv.newUserConnOrLeave().subscribe(
       (data) => {
           if(data.type == "join"){
-            console.log('New user connected!', data.user);
+            // console.log('New user connected!', data.user);
             this.usersRoom.push(data.user);
           }else if(data.type == "leave"){
             this.usersRoom = this.usersRoom.filter(user => user.id != data.id);
           }
 
-          
-          console.log('User just ' +data.type  + " the room");
+          // console.log('User just ' +data.type  + " the room");
       },
       (err:any) => console.error("Error al obtener nuevos usuarios", err)
     );
@@ -115,6 +114,8 @@ export class PlayComponent implements OnInit {
       this.playerTurnID = playerTurnID;
       this.user.drawing = playerTurnID == this.playerserv.playerId;
       this.setDrawingStatus(this.user.drawing);
+
+      this.drawHelper.changeColor("#fff");
     });
 
     this.playerserv.scoreUpdate().subscribe(data => {
