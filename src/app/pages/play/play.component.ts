@@ -28,6 +28,8 @@ export class PlayComponent implements OnInit {
 
   colors: Array<String>;
 
+  roomTime:number = 0;
+
   constructor(
     private chatservice:ChatService, private wssocket:WebSocketService,
     private drawHelper:DrawHelperService, private playerserv:PlayerSocketService
@@ -68,6 +70,8 @@ export class PlayComponent implements OnInit {
       "#00f3ff",
       "#fbff00"
     ];
+
+    setInterval(() => ++this.roomTime, 1000);
   }
 
   setupSubscribers(): any {  
@@ -108,6 +112,8 @@ export class PlayComponent implements OnInit {
       this.playerTurnID = data.playerTurnID;
 
       this.wordHint = data.wordHint ? data.wordHint : "_".repeat(data.wordLength);
+
+      this.roomTime = data.roomTime.toFixed(0);
     });
 
     this.playerserv.newDavinciUpdate().subscribe(playerTurnID => {
