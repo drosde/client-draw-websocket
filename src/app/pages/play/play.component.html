@@ -16,7 +16,7 @@
     </div> 
 
     <!-- CENTER -->
-    <div class="p-col-7">
+    <div class="p-col-7" id="reference-canvas">
       <div class="main-draw">
           
           <!-- HINT -->
@@ -31,30 +31,33 @@
             </div>
           </div>
 
-          <!-- COLOR PICKER - CLEAR CANVAS -->
-          <div class="color-picker" *ngIf="drawHelper.isDavinci">
-              <div class="ui-g">
-                  <div class="ui-g-4 button-clear-canvas">
-                      <button class="ui-g-4" (click)="clearCanvas($event)" title="Limpiar la pizarra"></button>
-                  </div>
-
-                  <div class="ui-g-8 ui-g-nopad">
-                    <button 
-                      *ngFor="let color of colors" 
-                      [class]="'ui-g-4 color-pick ' + (drawHelper.color == color ? 'picked-color' : '')"
-                      [style.background-color]="color"
-                      (click)="changeColorPen($event, color)" title="cambiar el color del lapiz"></button>
-                  </div>
-              </div>
-          </div>
 
           <!-- TIMER -->
           <div class="timer">
-            <span>{{ 90 - roomTime }}</span>
+            <span>{{ 90 - (roomTime <= 0 ? roomTime : 0) }}</span>
           </div>
           
-          <!-- CANVAS -->
-          <canvas id="main-canvas" width="500" height="300"></canvas>          
+          <div class="draw-box">
+            <!-- COLOR PICKER - CLEAR CANVAS PUT THIS AND CANVAS TOGETHER -->
+            <div class="color-picker" *ngIf="drawHelper.isDavinci">
+                <div class="ui-g">
+                    <div class="ui-g-4 button-clear-canvas">
+                        <button class="ui-g-4" (click)="clearCanvas($event)" title="Limpiar la pizarra"></button>
+                    </div>
+
+                    <div class="ui-g-8 ui-g-nopad">
+                      <button 
+                        *ngFor="let color of colors" 
+                        [class]="'ui-g-4 color-pick ' + (drawHelper.color == color ? 'picked-color' : '')"
+                        [style.background-color]="color"
+                        (click)="changeColorPen($event, color)" title="cambiar el color del lapiz"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CANVAS -->
+            <canvas id="main-canvas" width="200" height="200"></canvas>    
+          </div>      
       </div>
     </div>
 

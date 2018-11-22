@@ -7,8 +7,12 @@ import { PlayerSocketService } from './player-socket.service';
 })
 export class DrawHelperService {
 
-    private canvasElement:HTMLCanvasElement;
-    private canvasCtx:CanvasRenderingContext2D;
+    // canvas
+    public canvasElement:HTMLCanvasElement;
+    public canvasCtx:CanvasRenderingContext2D;
+
+    public canvasHeight:number;
+    public canvasWidth:number;
 
     // helpers
     private holdingClick = false;
@@ -29,23 +33,21 @@ export class DrawHelperService {
      */
     constructor(private drawSocket:DrawSocketService, private playerSocket:PlayerSocketService) { }
 
-    setUp(canvasElement:HTMLCanvasElement){       
+    setUp(canvasElement:HTMLCanvasElement){
         this.canvasElement = canvasElement;
         this.canvasCtx = canvasElement.getContext("2d");
         this.canvasCtx.fillStyle = "#fff";
         this.canvasCtx.strokeStyle = "#fff";
         this.canvasCtx.lineWidth = 3;
 
+        this.canvasHeight = this.canvasElement.height;
+        this.canvasWidth = this.canvasElement.width;
+
         this.setEventsListenersDraw();
 
-        this.drawSocket.subscribeDraw().subscribe(data => {
-            this.drawData(data.points);
-            // console.log(data);
-        });
+        this.drawSocket.subscribeDraw().subscribe( data => this.drawData(data.points));
 
-        this.drawSocket.subClearCanvas().subscribe(data => {
-            this.clearCanvas();
-        });
+        this.drawSocket.subClearCanvas().subscribe(() => this.clearCanvas());
 
         this.sendData();
     }
@@ -64,11 +66,15 @@ export class DrawHelperService {
         this.canvasCtx.beginPath();
         
         data.lines.forEach(line => {
+            let {x, y} = line;
+            x *= this.canvasWidth / 100;
+            y *= this.canvasHeight / 100;
+
             if(typeof(line.c) !== 'undefined' && line.c == false) {
-                this.canvasCtx.moveTo(line.x, line.y);
+                this.canvasCtx.moveTo(x, y);
             }
             
-            this.canvasCtx.lineTo(line.x, line.y);
+            this.canvasCtx.lineTo(x, y);
             this.canvasCtx.stroke();   
         });
         
@@ -152,11 +158,27 @@ export class DrawHelperService {
                     // si no continuamos el puntero va en el punto que indicó el jugador
                     this.canvasCtx.moveTo(ev.layerX, ev.layerY);
                 }
-                
+                              
+                console.log("Porcntaje", {
+                    x: `point ${ev.layerX} percent ${(ev.layerX * 100 / this.canvasWidth).toFixed(2) }%`,
+                    y: `point ${ev.layerY} percent ${(ev.layerY * 100 / this.canvasHeight).toFixed(2)}%`
+                });
+
                 // save last position
+                // TEST RESPONSIVE
+                let x = parseFloat((ev.layerX * 100 / this.canvasWidth).toFixed(2));
+                let y = parseFloat((ev.layerY * 100 / this.canvasHeight).toFixed(2));
+                // let x = ev.layerX * 100 / this.canvasWidth;
+                // let y = ev.layerY * 100 / this.canvasHeight;
+                let tempPoint = this.lastPoint;
+                tempPoint = {x, y};
+
+                console.log(tempPoint);
+
+                // this.lastPoint = {x: x, y: y};
                 this.lastPoint = {x: ev.layerX, y: ev.layerY};
-                if(!this.continuePrevious) this.lastPoint.c = false;
-                this.historialPoints.lines.push(this.lastPoint); 
+                if(!this.continuePrevious) tempPoint.c = this.lastPoint.c = false;
+                this.historialPoints.lines.push(tempPoint);
                 
                 this.canvasCtx.lineTo(ev.layerX, ev.layerY);
                 this.canvasCtx.stroke();

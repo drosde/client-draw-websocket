@@ -21,6 +21,7 @@ export class PlayComponent implements OnInit {
   comment: string;
   chatElem: HTMLElement;
   user: User;
+  maindrawContent:HTMLElement;
 
   wordHint:string = "_";
   word2draw:string;
@@ -72,6 +73,11 @@ export class PlayComponent implements OnInit {
     ];
 
     setInterval(() => ++this.roomTime, 1000);
+
+
+    this.maindrawContent = document.getElementById("reference-canvas");
+    this.resizeCanvas();
+    window.onresize = () => this.resizeCanvas();
   }
 
   setupSubscribers(): any {  
@@ -186,5 +192,24 @@ export class PlayComponent implements OnInit {
     }
 
     this.drawHelper.clearCanvas();
+  }
+
+  resizeCanvas(){
+    let wH = window.outerHeight;
+    let wW = window.outerWidth;
+    let offsetTop = this.drawHelper.canvasElement.getBoundingClientRect().top;
+    let marginWidth = 20;
+    let aspectWidth = 62 / 100;
+
+    let parent = getComputedStyle(this.maindrawContent);
+    let maxWidth = parseInt(parent.width.split('px')[0]) - marginWidth;
+    let maxHeight = parseInt(parent.height.split('px')[0]);
+
+    let height = maxHeight - offsetTop - 50;
+    let apsectRatio = maxWidth * aspectWidth; // rectangle. height is n% of the width.
+    this.drawHelper.canvasHeight = this.drawHelper.canvasElement.height = apsectRatio;
+    this.drawHelper.canvasWidth = this.drawHelper.canvasElement.width = maxWidth;
+
+    console.log(["max height", maxHeight, "aspect", apsectRatio,"height", height]);
   }
 }

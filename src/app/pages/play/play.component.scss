@@ -3,10 +3,9 @@ $secondary: #ff2e4c;
 $therd: #fcd77f;
 $four: #2e99b0;
 
-// .content{    
-//     // padding-top: .7em;
-//     // padding-bottom: .5em;
-// }
+.content{    
+    padding: 25px 5px;
+}
 
 .p-grid{
     max-width: 100%;
@@ -31,6 +30,8 @@ $four: #2e99b0;
 
     // background: linear-gradient(to left, #07090e, #2f45621a);
     background-color: #07090e;
+
+    border-radius: 6px;
 
     .chat{
         list-style: none;
@@ -97,7 +98,8 @@ $four: #2e99b0;
     align-items: center;
 
     .game-hint{
-        position: relative;
+        // position: relative;
+        height: 51px;
 
         .word-hint, .word-2draw{
             display: grid; 
@@ -122,13 +124,12 @@ $four: #2e99b0;
     }
 
     .color-picker{
-        margin-top: 46px;
+        // margin-top: 46px;
         // max-width: 160px;
         // max-height: 100px;
-        align-self: flex-start;
 
         // background-color: rgba(105, 105, 105, 0.66);
-        margin-top: 46px;
+        // margin-top: 46px;
         align-self: flex-start;
         border: 1px solid #483f3f;
         padding: 5px;
@@ -156,20 +157,40 @@ $four: #2e99b0;
     }
 
     .timer{
-        position: absolute;
-        right: 0;
-        top: 15px;
-        border: 1px solid;
-        
+        // position: absolute;
+        // right: 0;
+        // top: 15px;
+        align-self: flex-end;
+
+
+        border: 1px solid #4fe6e6;
+        border-radius: 16px;
+        padding: 5px;        
     }
 
     #main-canvas{
-        margin-top: 65px;
+        margin-top: 15px;
+
+        // width: 50%;
+        // margin: 0 auto;
+        // display: block;
+        // border: 1px solid #d9d9d9;
+
+        // width: 100%;
+        // height: 100%;
     }
 
     .word-2draw{
         opacity: .5;
         text-indent: -3px;
+    }
+
+    .draw-box{
+        display: flex;
+        flex-direction: column;
+
+        // width: 100%; // responsive canvas
+        // height: 100%;
     }
 }
 
@@ -189,6 +210,8 @@ $four: #2e99b0;
     background: linear-gradient(to right, #05070a, #0b0a1ac7);
     background-color: #07090e;
 
+    border-radius: 6px;
+
     .users{
         list-style-type: none;
         padding-left: 6px;
@@ -207,6 +230,9 @@ $four: #2e99b0;
                 font-weight: 800;
                 font-size: 1.25rem;
                 text-transform: capitalize;
+
+                text-overflow: ellipsis;
+                overflow: hidden;
             }
 
             .user-drawing{

@@ -23,6 +23,8 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.username = "player_" + Math.random().toString(36).substring(2);
   }
 
   play(){    
