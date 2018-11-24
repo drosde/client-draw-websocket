@@ -47,19 +47,23 @@ export class HomeComponent implements OnInit {
       }, 
       error => {
         this.showLoading = false;
-        console.error("Error al obtener una sala", error)
+
+        this.showError("No se pudo conectar con el servidor. Itente refrescando la página.");
       });
     }else{
-
       // Message Error
-      
-      this.usernameError.error = true;      
       let msg = (
         this.username ? 
           (this.username.length > 20 ? 'El nombre de usuario no puede tener mas de 20 caracteres' : '') +
           (this.username.length <= 2 ? 'El nombre de usuario tiene que tener mas de 2 caracteres' : '') 
           : 'Debes completar el campo "username"');
-      this.usernameError.msgs.push({severity:'error', summary:'Error:', detail: msg});
+
+      this.showError(msg);
     }
+  }
+
+  showError(msg){    
+    this.usernameError.error = true;
+    this.usernameError.msgs.push({severity:'error', summary:'Error:', detail: msg});
   }
 }

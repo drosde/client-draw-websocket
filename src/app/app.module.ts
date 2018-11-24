@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms'; // required for textarea/inputs bi
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule} from 'primeng/progressspinner';
+import { SliderModule } from 'primeng/slider';
 
 /** Services */
 import { WebSocketService } from './services/web-socket.service';
@@ -62,6 +63,7 @@ const appRoutes: Routes = [
     ProgressSpinnerModule,
     MessagesModule,
     MessageModule,
+    SliderModule,
 
 
     HttpClientModule,

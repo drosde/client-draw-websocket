@@ -34,24 +34,36 @@
 
           <!-- TIMER -->
           <div class="timer">
-            <span>{{ 90 - (roomTime <= 0 ? roomTime : 0) }}</span>
+            <span>{{ 90 - (roomTime > 90 || roomTime == 0 ? 0 : roomTime) }}</span>
           </div>
           
           <div class="draw-box">
-            <!-- COLOR PICKER - CLEAR CANVAS PUT THIS AND CANVAS TOGETHER -->
-            <div class="color-picker" *ngIf="drawHelper.isDavinci">
+            <!-- Tool Box - CLEAR CANVAS PUT THIS AND CANVAS TOGETHER -->
+            <div class="tool-box" *ngIf="drawHelper.isDavinci">
+                <!-- COLOR -->
                 <div class="ui-g">
                     <div class="ui-g-4 button-clear-canvas">
                         <button class="ui-g-4" (click)="clearCanvas($event)" title="Limpiar la pizarra"></button>
                     </div>
 
-                    <div class="ui-g-8 ui-g-nopad">
+                    <div class="ui-g-6 ui-g-nopad">
                       <button 
                         *ngFor="let color of colors" 
                         [class]="'ui-g-4 color-pick ' + (drawHelper.color == color ? 'picked-color' : '')"
                         [style.background-color]="color"
                         (click)="changeColorPen($event, color)" title="cambiar el color del lapiz"></button>
                     </div>
+                </div>
+                
+                <!-- PENCIL SIZE -->
+                <div class="ui-g-4 container">
+                  <div class="pnzSize-container" *ngFor="let size of pencilSizes" >
+                    <button 
+                      [class]="'pencil-size ' + (drawHelper.pencilSize == size ? 'picked-psize' : '')"
+                      [style.width]="(9 +size/2) + 'px'"
+                      [style.height]="(9 +size/2) + 'px'"
+                      (click)="changePenzilSize($event, size)" title="cambiar el tamaño del lapiz"></button>
+                  </div>
                 </div>
             </div>
 

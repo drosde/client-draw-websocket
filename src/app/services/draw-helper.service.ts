@@ -26,6 +26,7 @@ export class DrawHelperService {
     private intervalData: any;
 
     private color: string = "#fff";
+    public pencilSize: number = 3;
 
     /**
      * Draw and send data
@@ -38,7 +39,7 @@ export class DrawHelperService {
         this.canvasCtx = canvasElement.getContext("2d");
         this.canvasCtx.fillStyle = "#fff";
         this.canvasCtx.strokeStyle = "#fff";
-        this.canvasCtx.lineWidth = 3;
+        this.canvasCtx.lineWidth = this.pencilSize;
 
         this.canvasHeight = this.canvasElement.height;
         this.canvasWidth = this.canvasElement.width;
@@ -62,25 +63,30 @@ export class DrawHelperService {
         if(desd.length > 0) data.dot = JSON.parse(desd);
 
         this.changeColor(data.color);
+        this.changePenzilSize(data.psize);
         
         this.canvasCtx.beginPath();
-        
-        data.lines.forEach(line => {
-            let {x, y} = line;
-            x *= this.canvasWidth / 100;
-            y *= this.canvasHeight / 100;
 
-            if(typeof(line.c) !== 'undefined' && line.c == false) {
-                this.canvasCtx.moveTo(x, y);
-            }
-            
-            this.canvasCtx.lineTo(x, y);
-            this.canvasCtx.stroke();   
-        });
+        if(data.lines){
+            data.lines.forEach(line => {
+                let pn = Object.assign({}, line, this.fromRelativePoin(line.x, line.y));
+
+                if(typeof(line.c) !== 'undefined' && line.c == false) {
+                    this.canvasCtx.moveTo(pn.x, pn.y);
+                }
+                
+                this.canvasCtx.lineTo(pn.x, pn.y);
+                this.canvasCtx.stroke();   
+            });
+        }
         
-        data.dot.forEach(dot => {
-            this.canvasCtx.fillRect(dot.x,dot.y,3,3);
-        }); 
+        if(data.dot){
+            data.dot.forEach(dot => {
+                let pn = Object.assign({}, dot, this.fromRelativePoin(dot.x, dot.y));
+
+                this.canvasCtx.fillRect(pn.x,pn.y,3,3);
+            }); 
+        }
     }
     
     // 
@@ -96,13 +102,15 @@ export class DrawHelperService {
             let { lines, dot }  = this.historialPoints;
             let startLine = lines.length;
             let startDot = dot.length;
-            // console.log({startLine, startDot});
             
             // compress lines
             var data = this.historialPoints as any;
             if(data.lines.length > 0) data.lines = this.compressData(JSON.stringify(data.lines));
             if(data.dot.length > 0) data.dot = this.compressData(JSON.stringify(data.dot));
-            data.color = this.color;
+            
+            // draw config
+            data.color  = this.color;
+            data.psize  = this.pencilSize;
             
             this.drawSocket.sendDrawedData(data, this.playerSocket.playerId);
             
@@ -116,7 +124,9 @@ export class DrawHelperService {
         // single click
         this.canvasElement.addEventListener('click', ((ev) => {      
             if(this.isDavinci){ 
-                this.historialPoints.dot.push({x: ev.layerX, y:ev.layerY});
+                let point = this.toRelativePoin(ev.layerX, ev.layerY);
+
+                this.historialPoints.dot.push(point);
                 this.canvasCtx.fillRect(ev.layerX,ev.layerY,3,3);
             }
         }));
@@ -158,24 +168,12 @@ export class DrawHelperService {
                     // si no continuamos el puntero va en el punto que indicó el jugador
                     this.canvasCtx.moveTo(ev.layerX, ev.layerY);
                 }
-                              
-                console.log("Porcntaje", {
-                    x: `point ${ev.layerX} percent ${(ev.layerX * 100 / this.canvasWidth).toFixed(2) }%`,
-                    y: `point ${ev.layerY} percent ${(ev.layerY * 100 / this.canvasHeight).toFixed(2)}%`
-                });
 
                 // save last position
-                // TEST RESPONSIVE
-                let x = parseFloat((ev.layerX * 100 / this.canvasWidth).toFixed(2));
-                let y = parseFloat((ev.layerY * 100 / this.canvasHeight).toFixed(2));
-                // let x = ev.layerX * 100 / this.canvasWidth;
-                // let y = ev.layerY * 100 / this.canvasHeight;
                 let tempPoint = this.lastPoint;
-                tempPoint = {x, y};
+                tempPoint = Object.assign({}, tempPoint, this.toRelativePoin(ev.layerX, ev.layerY));
 
-                console.log(tempPoint);
 
-                // this.lastPoint = {x: x, y: y};
                 this.lastPoint = {x: ev.layerX, y: ev.layerY};
                 if(!this.continuePrevious) tempPoint.c = this.lastPoint.c = false;
                 this.historialPoints.lines.push(tempPoint);
@@ -238,10 +236,29 @@ export class DrawHelperService {
         //     this.drawSocket.sendChangeColor(color, this.playerSocket.playerId);
         // }
     }
+
+    changePenzilSize(size: number){
+        this.canvasCtx.lineWidth = size;
+        this.pencilSize = size;
+    }
     
     clearCanvas(){
         this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 
         this.drawSocket.sendClearCanvas(this.playerSocket.playerId);
+    }
+
+    toRelativePoin(x, y) : {x:number, y:number}{
+        return {
+            x: parseFloat((x * 100 / this.canvasWidth).toFixed(2)),
+            y: parseFloat((y * 100 / this.canvasHeight).toFixed(2))
+        }
+    }
+
+    fromRelativePoin(x, y) : {x:number, y:number}{
+        return {
+            x: x * this.canvasWidth / 100,
+            y: y * this.canvasHeight / 100
+        }
     }
 }

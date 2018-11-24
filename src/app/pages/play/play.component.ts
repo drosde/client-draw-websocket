@@ -28,6 +28,7 @@ export class PlayComponent implements OnInit {
   playerTurnID: string;
 
   colors: Array<String>;
+  pencilSizes: Array<number> = [3, 5, 8, 10]; // sizes
 
   roomTime:number = 0;
 
@@ -71,8 +72,6 @@ export class PlayComponent implements OnInit {
       "#00f3ff",
       "#fbff00"
     ];
-
-    setInterval(() => ++this.roomTime, 1000);
 
 
     this.maindrawContent = document.getElementById("reference-canvas");
@@ -120,6 +119,7 @@ export class PlayComponent implements OnInit {
       this.wordHint = data.wordHint ? data.wordHint : "_".repeat(data.wordLength);
 
       this.roomTime = data.roomTime.toFixed(0);
+      setInterval(() => ++this.roomTime, 1000);
     });
 
     this.playerserv.newDavinciUpdate().subscribe(playerTurnID => {
@@ -192,6 +192,15 @@ export class PlayComponent implements OnInit {
     }
 
     this.drawHelper.clearCanvas();
+  }
+
+  changePenzilSize(ev, size: number){
+    if(ev) {
+      ev.preventDefault();
+      ev.srcElement.blur();
+    }
+
+    this.drawHelper.changePenzilSize(size);
   }
 
   resizeCanvas(){
